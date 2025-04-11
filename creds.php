@@ -36,11 +36,12 @@ function parseDbCredentials($file) {
 }
 
 function getTables($creds) {
-    $host = $creds['DB_HOSTNAME'] ?? 'localhost';
-    $user = $creds['DB_USERNAME'] ?? 'root';
-    $pass = $creds['DB_PASSWORD'] ?? '';
-    $db   = $creds['DB_DATABASE'] ?? '';
-    $port = $creds['DB_PORT']     ?? 3306;
+    $host = $creds['DB_HOSTNAME'] ? $creds['DB_HOSTNAME'] : 'localhost';
+    $user = $creds['DB_USERNAME'] ? $creds['DB_USERNAME'] : 'root';
+    $pass = $creds['DB_PASSWORD'] ? $creds['DB_PASSWORD'] : '';
+    $db   = $creds['DB_DATABASE'] ? $creds['DB_DATABASE'] : '';
+    $port = $creds['DB_PORT']     ?$creds['DB_PORT'] : 3306;
+
 
     $mysqli = @new mysqli($host, $user, $pass, $db, (int)$port);
     if ($mysqli->connect_error) {
