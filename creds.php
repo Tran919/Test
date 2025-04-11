@@ -66,7 +66,7 @@ echo "<!DOCTYPE html><html lang='ru'><head><meta charset='UTF-8'><title>DB Inspe
 echo "<style>body{font-family:monospace;background:#f4f4f4;padding:20px}h2{color:#333}ul{margin-bottom:30px}li{margin:3px 0}</style>";
 echo "</head><body><h1>🔍 Поиск config.php и таблиц в БД</h1>";
 
-$searchPath = '/var/www'; // ← Корневая директория с сайтами
+$searchPath = '/home/siteme'; // ← Корневая директория с сайтами
 $configs = findConfigFiles($searchPath);
 
 if (empty($configs)) {
