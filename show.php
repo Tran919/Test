@@ -1,6 +1,6 @@
 <?php
 // Путь к config.php
-$configPath = __DIR__ . '/home/siteme/bkbm.ua/www/config.php';
+$configPath = '/home/siteme/bkbm.ua/www/config.php';
 
 if (!file_exists($configPath)) {
     die("Файл config.php не найден по пути: $configPath");
