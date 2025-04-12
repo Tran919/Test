@@ -70,7 +70,7 @@ function inspectTargetTables($mysqli, $targetTables) {
 
 // === Настройки ===
 $searchPath = '/home/siteme';
-$targetTables = ['oc_customer', 'oc_order', 'oc_user', '28oc_customer', '28oc_order', '28oc_user', 'customer', 'order', 'user']; // ← ЗАДАЙ СВОЙ СПИСОК ТУТ
+$targetTables = ['oc_customer', 'oc_order', 'oc_user', 'oc_address', '28oc_customer', '28oc_order', '28oc_user', '28oc_address', 'customer', 'order', 'user', 'address'];
 
 // === HTML HEADER ===
 echo "<!DOCTYPE html><html lang='ru'><head><meta charset='UTF-8'><title>DB Inspector</title>";
