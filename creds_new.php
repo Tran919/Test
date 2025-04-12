@@ -115,7 +115,9 @@ foreach ($configs as $file) {
 
         echo "<li>✅ <strong>$table</strong>: {$info['count']} записей";
         echo "<ul><li>🔑 Столбцы: ";
-        echo implode(', ', array_map(fn($c) => "<code>$c</code>", $info['columns']));
+        echo implode(', ', array_map(function($c) {
+            return "<code>$c</code>";
+        }, $info['columns']));
         echo "</li></ul></li>";
     }
 
