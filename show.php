@@ -1,19 +1,17 @@
 <?php
 // Путь к config.php
-$configPath = '/home/siteme/bkbm.ua/www/config.php';
+$configPath = __DIR__ . '/home/siteme/bkbm.ua/www/config.php';
 
-// Проверка наличия файла
 if (!file_exists($configPath)) {
     die("Файл config.php не найден по пути: $configPath");
 }
 
-// Подгружаем config.php в изолированную область
-$config = [];
+// Изоляция импорта
 ob_start();
 require $configPath;
 ob_end_clean();
 
-// Получаем параметры из define()
+// Получаем параметры подключения
 $defined = get_defined_constants(true)['user'];
 
 $dbHost = $defined['DB_HOSTNAME'] ? $defined['DB_HOSTNAME'] : null;
@@ -23,48 +21,61 @@ $dbName = $defined['DB_DATABASE'] ? $defined['DB_DATABASE'] : null;
 $dbPort = $defined['DB_PORT'] ? $defined['DB_PORT'] : 3306;
 
 if (!$dbHost || !$dbUser || !$dbName) {
-    die("Не удалось извлечь параметры подключения из config.php");
+    die("Параметры подключения не заданы");
 }
 
-// Подключение к базе данных
+// Подключение
 $mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbName, $dbPort);
 if ($mysqli->connect_error) {
     die("Ошибка подключения: " . $mysqli->connect_error);
 }
-
-// Установка кодировки
 $mysqli->set_charset("utf8mb4");
+
+// Обработка удаления таблицы
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_table'])) {
+    $tableToDelete = $mysqli->real_escape_string($_POST['delete_table']);
+    if (!empty($tableToDelete)) {
+        $mysqli->query("DROP TABLE IF EXISTS `$tableToDelete`");
+        echo "<p style='color: red; font-weight: bold;'>Таблица <code>$tableToDelete</code> удалена.</p>";
+    }
+}
 
 // Получаем список таблиц
 $tables = [];
 $res = $mysqli->query("SHOW TABLES");
-if ($res) {
-    while ($row = $res->fetch_array()) {
-        $tables[] = $row[0];
-    }
-} else {
-    die("Не удалось получить список таблиц");
+while ($row = $res->fetch_array()) {
+    $tables[] = $row[0];
 }
 
-// Выводим все записи из каждой таблицы
-echo "<h1>Все данные из базы данных <code>$dbName</code></h1>";
+// Форма удаления таблицы
+echo <<<HTML
+<h2>Удалить таблицу</h2>
+<form method="POST" onsubmit="return confirm('Точно удалить таблицу?');">
+    <input type="text" name="delete_table" placeholder="Введите имя таблицы" required>
+    <button type="submit">Удалить</button>
+</form>
+<hr>
+HTML;
+
+// Вывод таблиц (с лимитом 50)
+echo "<h1>Содержимое базы данных <code>$dbName</code></h1>";
 foreach ($tables as $table) {
     echo "<h2>Таблица: <code>$table</code></h2>";
 
-    $result = $mysqli->query("SELECT * FROM `$table`");
+    $result = $mysqli->query("SELECT * FROM `$table` LIMIT 50");
+
     if (!$result || $result->num_rows === 0) {
         echo "<p>Нет данных или ошибка запроса</p>";
         continue;
     }
 
+    echo "<p>Показаны первые 50 записей</p>";
     echo "<table border='1' cellpadding='5' cellspacing='0'><thead><tr>";
-    // Заголовки
     while ($field = $result->fetch_field()) {
         echo "<th>" . htmlspecialchars($field->name) . "</th>";
     }
     echo "</tr></thead><tbody>";
 
-    // Данные
     while ($row = $result->fetch_assoc()) {
         echo "<tr>";
         foreach ($row as $cell) {
