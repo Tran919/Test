@@ -96,7 +96,7 @@ foreach ($configs as $file) {
     $user = $creds['DB_USERNAME'];
     $pass = $creds['DB_PASSWORD'];
     $db   = $creds['DB_DATABASE'];
-    $port = (int)($creds['DB_PORT'] ? (int)($creds['DB_PORT'] : 3306);
+    $port = (int)($creds['DB_PORT'] ? $creds['DB_PORT'] : 3306);
 
     $mysqli = @new mysqli($host, $user, $pass, $db, $port);
     if ($mysqli->connect_error) {
