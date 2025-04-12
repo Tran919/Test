@@ -58,7 +58,7 @@ function inspectTargetTables($mysqli, $targetTables) {
             $count = $mysqli->query("SELECT COUNT(*) AS cnt FROM `$table`");
             if ($count) {
                 $row = $count->fetch_assoc();
-                $tableInfo['count'] = $row['cnt'] ?? 0;
+                $tableInfo['count'] = $row['cnt'] ? $row['cnt'] : 0;
             }
         }
 
